@@ -16,7 +16,6 @@ jobs:
       matrix:
         include:
           - platform: 'macos-14'
-          - platform: 'macos-13'
           - platform: 'ubuntu-22.04'
           - platform: 'windows-latest'
 
