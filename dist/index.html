@@ -1098,85 +1098,43 @@ body {
     });
   }
 
-  // --- 文件持久化后端（Tauri 环境）---
-  // 说明：PakePlus 打包后页面由本地随机端口提供，浏览器存储按端口隔离，
-  // 每次启动都会丢失数据。这里改为把数据写入 exe 同目录的 securepass-data.json
-  // （通过 path.resourceDir() 定位，跟随 exe 移动，数据随便携文件夹携带）；
-  // 若 exe 目录不可写，则自动回退到 AppData\Local。普通浏览器中打开时回退 IndexedDB。
+  // --- 文件持久化后端（Tauri 桌面版）---
+  // 说明：桌面版（Tauri 壳）通过自定义命令把加密数据写入 exe 同目录的
+  // securepass-data.json —— 便携版放在 U 盘时，数据跟着 U 盘走；
+  // 普通浏览器中打开本页时，window.__TAURI__ 不存在，自动回退 IndexedDB。
   var storageMode = 'idb';
   var fileStore = { users: {}, data: {} };
   var fileStoreLoaded = false;
   var fileWriteChain = Promise.resolve();
-  var DATA_FILE = 'securepass-data.json';
-  var dataFilePath = null;
-  var dataFileFallback = null;
-  var dataFileResolved = false;
 
   function detectFileStorage() {
     try {
-      return !!(window.__TAURI__ && window.__TAURI__.fs &&
-        window.__TAURI__.fs.writeTextFile && window.__TAURI__.fs.readTextFile &&
-        window.__TAURI__.path && window.__TAURI__.path.resourceDir &&
-        window.__TAURI__.path.appLocalDataDir);
+      return !!(window.__TAURI__ && window.__TAURI__.core && window.__TAURI__.core.invoke);
     } catch(e) { return false; }
   }
 
-  function resolveDataFile() {
-    if (dataFileResolved) return Promise.resolve();
-    dataFileResolved = true;
-    return new Promise(function(resolve){
-      (async function(){
-        var pa = window.__TAURI__.path;
-        var joinSafe = async function(a, b){
-          try { return await pa.join(a, b); } catch(e) { return a + '\\' + b; }
-        };
-        var dirs = [];
-        try { dirs.push(await pa.resourceDir()); } catch(e) {}
-        try { dirs.push(await pa.appLocalDataDir()); } catch(e) {}
-        var paths = [];
-        for (var i = 0; i < dirs.length; i++) {
-          paths.push(await joinSafe(dirs[i], DATA_FILE));
-        }
-        if (paths.length > 0) dataFilePath = paths[0];
-        if (paths.length > 1) dataFileFallback = paths[1];
-        resolve();
-      })();
-    });
-  }
-
-  function readDataFileSafe(path) {
-    return window.__TAURI__.fs.readTextFile(path).catch(function(){ return null; });
+  function readDataFileSafe() {
+    return window.__TAURI__.core.invoke('read_data_file').then(function(txt){
+      return (typeof txt === 'string' && txt !== '') ? txt : null;
+    }).catch(function(){ return null; });
   }
 
   function loadFileStore() {
     if (fileStoreLoaded) return Promise.resolve();
     return new Promise(function(resolve){
-      resolveDataFile().then(function(){
-        if (!dataFilePath && !dataFileFallback) {
+      readDataFileSafe().then(function(txt){
+        if (txt) {
+          try {
+            var parsed = JSON.parse(txt);
+            fileStore = (parsed && typeof parsed === 'object') ? parsed : { users: {}, data: {} };
+          } catch(e) { fileStore = { users: {}, data: {} }; }
+        } else {
           fileStore = { users: {}, data: {} };
-          fileStoreLoaded = true;
-          resolve();
-          return;
         }
-        readDataFileSafe(dataFilePath).then(function(txt){
-          if (txt === null && dataFileFallback && dataFileFallback !== dataFilePath) {
-            return readDataFileSafe(dataFileFallback);
-          }
-          return txt;
-        }).then(function(txt){
-          if (txt) {
-            try {
-              var parsed = JSON.parse(txt);
-              fileStore = (parsed && typeof parsed === 'object') ? parsed : { users: {}, data: {} };
-            } catch(e) { fileStore = { users: {}, data: {} }; }
-          } else {
-            fileStore = { users: {}, data: {} };
-          }
-          if (!fileStore.users) fileStore.users = {};
-          if (!fileStore.data) fileStore.data = {};
-          fileStoreLoaded = true;
-          resolve();
-        });
+        if (!fileStore.users) fileStore.users = {};
+        if (!fileStore.data) fileStore.data = {};
+        fileStoreLoaded = true;
+        resolve();
       });
     });
   }
@@ -1184,17 +1142,7 @@ body {
   function saveFileStore() {
     var payload = JSON.stringify(fileStore);
     fileWriteChain = fileWriteChain.then(function(){
-      return resolveDataFile().then(function(){
-        if (!dataFilePath && !dataFileFallback) {
-          throw new Error('no data path');
-        }
-        return window.__TAURI__.fs.writeTextFile(dataFilePath, payload).catch(function(){
-          if (dataFileFallback && dataFileFallback !== dataFilePath) {
-            return window.__TAURI__.fs.writeTextFile(dataFileFallback, payload);
-          }
-          throw new Error('primary data path not writable');
-        });
-      });
+      return window.__TAURI__.core.invoke('write_data_file', { contents: payload });
     }).catch(function(e){
       console.warn('SecurePass 数据写入失败（数据仅保留在当前会话）:', e);
     });
