@@ -1,1 +1,43 @@
-ewogICIkc2NoZW1hIjogImh0dHBzOi8vc2NoZW1hLnRhdXJpLmFwcC9jb25maWcvMiIsCiAgInByb2R1Y3ROYW1lIjogIlNlY3VyZVBhc3MiLAogICJ2ZXJzaW9uIjogIjAuMS4wIiwKICAiaWRlbnRpZmllciI6ICJjb20uc2VjdXJlcGFzcy5hcHAiLAogICJidWlsZCI6IHsKICAgICJmcm9udGVuZERpc3QiOiAiLi4vZGlzdCIKICB9LAogICJhcHAiOiB7CiAgICAid2l0aEdsb2JhbFRhdXJpIjogZmFsc2UsCiAgICAid2luZG93cyI6IFsKICAgICAgewogICAgICAgICJsYWJlbCI6ICJtYWluIiwKICAgICAgICAidGl0bGUiOiAiU2VjdXJlUGFzcyIsCiAgICAgICAgIndpZHRoIjogOTAwLAogICAgICAgICJoZWlnaHQiOiA2NTAsCiAgICAgICAgIm1pbldpZHRoIjogNzIwLAogICAgICAgICJtaW5IZWlnaHQiOiA1MDAsCiAgICAgICAgImNlbnRlciI6IHRydWUsCiAgICAgICAgInJlc2l6YWJsZSI6IHRydWUKICAgICAgfQogICAgXSwKICAgICJzZWN1cml0eSI6IHsKICAgICAgImNzcCI6IG51bGwKICAgIH0KICB9LAogICJidW5kbGUiOiB7CiAgICAiYWN0aXZlIjogdHJ1ZSwKICAgICJ0YXJnZXRzIjogImFsbCIsCiAgICAiaWNvbiI6IFsKICAgICAgImljb25zLzMyeDMyLnBuZyIsCiAgICAgICJpY29ucy8xMjh4MTI4LnBuZyIsCiAgICAgICJpY29ucy8xMjh4MTI4QDJ4LnBuZyIsCiAgICAgICJpY29ucy9pY29uLmljbnMiLAogICAgICAiaWNvbnMvaWNvbi5pY28iCiAgICBdLAogICAgIndpbmRvd3MiOiB7CiAgICAgICJuc2lzIjogewogICAgICAgICJpbnN0YWxsTW9kZSI6ICJjdXJyZW50VXNlciIKICAgICAgfQogICAgfQogIH0KfQo=
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "SecurePass",
+  "version": "0.1.0",
+  "identifier": "com.securepass.app",
+  "build": {
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [
+      {
+        "label": "main",
+        "title": "SecurePass",
+        "width": 900,
+        "height": 650,
+        "minWidth": 720,
+        "minHeight": 500,
+        "center": true,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    }
+  }
+}

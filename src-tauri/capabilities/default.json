@@ -1,1 +1,6 @@
-ewogICJpZGVudGlmaWVyIjogImRlZmF1bHQiLAogICJkZXNjcmlwdGlvbiI6ICLkuLvnqpflj6Ppu5jorqTmnYPpmZAiLAogICJ3aW5kb3dzIjogWyJtYWluIl0sCiAgInBlcm1pc3Npb25zIjogWyJjb3JlOmRlZmF1bHQiXQp9Cg==
+{
+  "identifier": "default",
+  "description": "主窗口默认权限",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}

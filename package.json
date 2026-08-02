@@ -1,1 +1,15 @@
-ewogICJuYW1lIjogInNlY3VyZXBhc3MtZGVza3RvcCIsCiAgInByaXZhdGUiOiB0cnVlLAogICJ2ZXJzaW9uIjogIjAuMS4wIiwKICAiZGVzY3JpcHRpb24iOiAiU2VjdXJlUGFzcyDlr4bnoIHnrqHnkIblmajmoYzpnaLniYgiLAogICJzY3JpcHRzIjogewogICAgInRhdXJpIjogInRhdXJpIgogIH0sCiAgImRlcGVuZGVuY2llcyI6IHsKICAgICJAdGF1cmktYXBwcy9hcGkiOiAiXjIuMC4wIgogIH0sCiAgImRldkRlcGVuZGVuY2llcyI6IHsKICAgICJAdGF1cmktYXBwcy9jbGkiOiAiXjIuMC4wIgogIH0KfQo=
+{
+  "name": "securepass-desktop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SecurePass 密码管理器桌面版",
+  "scripts": {
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}

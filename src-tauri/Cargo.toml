@@ -1,1 +1,11 @@
-W3BhY2thZ2VdCm5hbWUgPSAic2VjdXJlcGFzcyIKdmVyc2lvbiA9ICIwLjEuMCIKZGVzY3JpcHRpb24gPSAiU2VjdXJlUGFzcyDlr4bnoIHnrqHnkIblmagiCmVkaXRpb24gPSAiMjAyMSIKCltidWlsZC1kZXBlbmRlbmNpZXNdCnRhdXJpLWJ1aWxkID0geyB2ZXJzaW9uID0gIjIiLCBmZWF0dXJlcyA9IFtdIH0KCltkZXBlbmRlbmNpZXNdCnRhdXJpID0geyB2ZXJzaW9uID0gIjIiLCBmZWF0dXJlcyA9IFtdIH0K
+[package]
+name = "securepass"
+version = "0.1.0"
+description = "SecurePass 密码管理器"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
