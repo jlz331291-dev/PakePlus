@@ -1,34 +1,17 @@
-name: SecurePass Release
+name: SecurePass Portable Build
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
 
 permissions:
   contents: write
 
 jobs:
-  publish-tauri:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: 'macos-14'
-          - platform: 'ubuntu-22.04'
-          - platform: 'windows-latest'
-
-    runs-on: ${{ matrix.platform }}
-    timeout-minutes: 90
+  build-portable:
+    runs-on: windows-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Linux system dependencies
-        if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
       - uses: pnpm/action-setup@v3
         with:
@@ -53,30 +36,10 @@ jobs:
       - name: Regenerate icons
         run: pnpm tauri icon
 
-      - name: Build app and create release
-        uses: tauri-apps/tauri-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: SecurePass-v__VERSION__
-          releaseName: 'SecurePass v__VERSION__'
-          releaseBody: |
-            SecurePass 密码管理器桌面版（PakePlus 在线打包）。
+      - name: Build portable exe (no bundle)
+        run: pnpm tauri build --no-bundle
 
-            Windows：
-            - `*-setup.exe`：NSIS 安装包（推荐，无需管理员权限）
-            - `SecurePass_*_x64-portable.exe`：免安装单文件，直接运行（需系统自带 WebView2 运行时，Win10/11 通常已包含）
-
-            macOS：`*.dmg`（未签名，首次打开需在“系统设置-隐私与安全性”中允许）
-
-            Linux：`*.AppImage` / `*.deb` / `*.rpm`
-          releaseDraft: true
-          prerelease: false
-          tauriScript: 'npm run tauri'
-          args: ${{ matrix.args }}
-
-      - name: Upload standalone portable exe (Windows)
-        if: matrix.platform == 'windows-latest'
+      - name: Upload portable exe to release
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
