@@ -1,6 +1,1 @@
-// Prevents additional console window on Windows in release, DO NOT REMOVE!!
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-
-fn main() {
-    pakeplus_lib::run()
-}
+IyFbY2ZnX2F0dHIobm90KGRlYnVnX2Fzc2VydGlvbnMpLCB3aW5kb3dzX3N1YnN5c3RlbSA9ICJ3aW5kb3dzIildCgpmbiBtYWluKCkgewogICAgdGF1cmk6OkJ1aWxkZXI6OmRlZmF1bHQoKQogICAgICAgIC5ydW4odGF1cmk6OmdlbmVyYXRlX2NvbnRleHQhKCkpCiAgICAgICAgLmV4cGVjdCgiZXJyb3Igd2hpbGUgcnVubmluZyBTZWN1cmVQYXNzIik7Cn0K
