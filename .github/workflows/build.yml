@@ -88,7 +88,12 @@ jobs:
             echo "::warning::未找到草稿发布 ${TAG}，跳过便携版 exe 上传。"
             exit 0
           fi
-          gh api -X POST \
+          if [ ! -f "src-tauri/target/release/securepass.exe" ]; then
+            echo "::error::未找到 src-tauri/target/release/securepass.exe"
+            exit 1
+          fi
+          curl -sL -X POST \
             -H "Content-Type: application/octet-stream" \
-            --input "src-tauri/target/release/securepass.exe" \
-            "uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=SecurePass_${VERSION}_x64-portable.exe"
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            --data-binary "@src-tauri/target/release/securepass.exe" \
+            "https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=SecurePass_${VERSION}_x64-portable.exe"
