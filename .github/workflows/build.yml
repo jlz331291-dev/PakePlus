@@ -83,7 +83,7 @@ jobs:
         run: |
           VERSION="$(node -p "require('./src-tauri/tauri.conf.json').version")"
           TAG="SecurePass-v${VERSION}"
-          RELEASE_ID="$(gh api "repos/${GITHUB_REPOSITORY}/releases" --jq ".[] | select(.tag_name==\"${TAG}\" and .draft==true) | .id" | head -n 1)"
+          RELEASE_ID="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/releases" --jq ".[] | select(.tag_name==\"${TAG}\" and .draft==true) | .id" | head -n 1)"
           if [ -z "${RELEASE_ID}" ]; then
             echo "::warning::未找到草稿发布 ${TAG}，跳过便携版 exe 上传。"
             exit 0
@@ -91,4 +91,4 @@ jobs:
           gh api -X POST \
             -H "Content-Type: application/octet-stream" \
             --input "src-tauri/target/release/securepass.exe" \
-            "repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=SecurePass_${VERSION}_x64-portable.exe"
+            "uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=SecurePass_${VERSION}_x64-portable.exe"
